@@ -1,0 +1,91 @@
+<form [formGroup]="movieForm" (ngSubmit)="onSubmit()" class="p-4">
+  <h1 class="text-center">{{title}}</h1>
+  <hr>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="title" class="form-label">Título </label>
+      <input
+        [class.is-invalid]="movieForm.get('title')?.invalid && (movieForm.get('title')?.touched || movieForm.get('title')?.dirty)"
+        type="text" class="form-control" id="title" formControlName="title">
+      <div
+        *ngIf="movieForm.get('title')?.invalid && (movieForm.get('title')?.touched || movieForm.get('title')?.dirty)">
+        <div style="color:red;" *ngIf="movieForm.get('title')?.errors?.['required']">El título es requerido.</div>
+        <div style="color:red;" *ngIf="movieForm.get('title')?.errors?.['minlength']">El título debe tener al menos 5
+          caracteres.</div>
+        <div style="color:red;" *ngIf="movieForm.get('title')?.errors?.['movieNameRepeat']">El título de la película ya
+          existe.</div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="href" class="form-label">Link</label>
+      <input
+        [class.is-invalid]="movieForm.get('href')?.invalid && (movieForm.get('href')?.touched || movieForm.get('href')?.dirty)"
+        type="text" class="form-control" id="href" formControlName="href">
+      <div style="color:red;" *ngIf="movieForm.get('href')?.errors?.['invalidHref']">El enlace debe estar en mayúsculas
+        y los espacios deben ser reemplazados por guiones bajos.</div>
+    </div>
+
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="year" class="form-label">Año</label>
+      <input type="number" class="form-control" id="year" formControlName="year"
+        [class.is-invalid]="movieForm.get('year')?.invalid && (movieForm.get('year')?.touched || movieForm.get('year')?.dirty)">
+      <div *ngIf="movieForm.get('year')?.invalid && (movieForm.get('year')?.touched || movieForm.get('year')?.dirty)">
+        <div style="color:red;" *ngIf="movieForm.get('year')?.errors?.['min']">El año debe ser mínimo 1900.</div>
+        <div style="color:red;" *ngIf="movieForm.get('year')?.errors?.['max']">El año debe ser máximo 2023.</div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="extract" class="form-label">Extracto</label>
+      <textarea type="text" class="form-control" id="extract" formControlName="extract"
+        [class.is-invalid]="movieForm.get('extract')?.invalid && (movieForm.get('extract')?.touched || movieForm.get('extract')?.dirty)">
+      </textarea>
+      <div
+        *ngIf="movieForm.get('extract')?.invalid && (movieForm.get('extract')?.touched || movieForm.get('extract')?.dirty)">
+        <div style="color:red;" *ngIf="movieForm.get('extract')?.errors?.['required']">El extracto es requerido.</div>
+        <div style="color:red;" *ngIf="movieForm.get('extract')?.errors?.['minlength']">El extracto debe tener al menos
+          15 caracteres.</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Cast</h4>
+      <button type="button" class="btn btn-info mb-2" (click)="addCast()"><i class="bi-plus"></i></button>
+    </div>
+    <div formArrayName="cast">
+      <div *ngFor="let castGroup of cast.controls; let i = index" [formGroupName]="i">
+        <h4>Nro: {{i + 1}}</h4>
+        <div class="mb-3 col-md-6">
+          <label for="firstName" class="form-label">Nombre</label>
+          <input type="text" class="form-control" formControlName="firstName"
+            [class.is-invalid]="castGroup.get('firstName')?.invalid && (castGroup.get('firstName')?.dirty || castGroup.get('firstName')?.touched)" />
+          <div
+            *ngIf="castGroup.get('firstName')?.invalid && (castGroup.get('firstName')?.dirty || castGroup.get('firstName')?.touched)">
+            <small class="text-danger" *ngIf="castGroup.get('firstName')?.errors?.['required']">El nombre es
+              requerido.</small>
+            <small class="text-danger" *ngIf="castGroup.get('firstName')?.errors?.['minlength']">El nombre debe tener
+              al menos 5 caracteres.</small>
+          </div>
+        </div>
+        <div class="mb-3 col-md-6">
+          <label for="lastName" class="form-label">Apellido</label>
+          <input type="text" class="form-control" formControlName="lastName"
+            [class.is-invalid]="castGroup.get('lastName')?.invalid && (castGroup.get('lastName')?.dirty || castGroup.get('lastName')?.touched)" />
+          <div
+            *ngIf="castGroup.get('lastName')?.invalid && (castGroup.get('lastName')?.dirty || castGroup.get('lastName')?.touched)">
+            <small class="text-danger" *ngIf="castGroup.get('lastName')?.errors?.['required']">El apellido es
+              requerido.</small>
+            <small class="text-danger" *ngIf="castGroup.get('lastName')?.errors?.['maxlength']">El apellido no debe
+              tener más de 20 caracteres.</small>
+          </div>
+          <button type="button" class="btn btn-danger mt-2" (click)="removeCast(i)"><i class="bi-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
